@@ -16,6 +16,10 @@ const LinkBehavior = forwardRef<
 });
 
 export const theme = createTheme({
+  palette: {
+    primary: { main: "#2d5f7d" },
+    secondary: { main: "#5f2d7d" },
+  },
   components: {
     MuiLink: {
       defaultProps: {

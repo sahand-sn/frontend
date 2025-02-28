@@ -1,5 +1,5 @@
 import type { MetaArgs } from "react-router";
-import { Login } from "../components/login";
+import Login from "../components/login";
 
 export function meta({}: MetaArgs) {
   return [{ title: "Login" }];

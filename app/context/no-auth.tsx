@@ -5,8 +5,8 @@ import { useNotification } from "./notification";
 import type { IError } from "~/types/api";
 
 export interface NoAuthContextType {
-  login: (email: string, password: string) => Promise<void>;
-  signup: (name: string, email: string, password: string) => Promise<void>;
+  login: (username: string, password: string) => Promise<void>;
+  signup: (username: string, password: string) => Promise<void>;
   noAuthAxios: AxiosInstance;
 }
 
