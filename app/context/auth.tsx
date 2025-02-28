@@ -8,7 +8,7 @@ import {
 import { Outlet, useNavigate } from "react-router";
 import axios, { AxiosError, type AxiosInstance } from "axios";
 import type { User } from "../types/user";
-import type { TResponse } from "~/types/api";
+import type { IError } from "~/types/api";
 import { useNotification } from "./notification";
 
 export interface AuthContextType {
@@ -44,15 +44,14 @@ export default function AuthProvider() {
     }
 
     await authAxios
-      .get<TResponse<{ user: User }>>("/auth/me")
+      .get<{ user: User }>("/user")
       .then((res) => {
-        setUser(res.data.data.user);
-        showNotification(res.data.message, "success");
+        setUser(res.data.user);
       })
-      .catch((err: AxiosError<TResponse>) => {
+      .catch((err: AxiosError<IError>) => {
         logout();
         showNotification(
-          err.response?.data.message ?? "Some thing went wrong!",
+          err.response?.data.error ?? "Some thing went wrong!",
           "error"
         );
       });
@@ -79,7 +78,7 @@ export default function AuthProvider() {
 
   return (
     <AuthContext.Provider value={value}>
-      {user ? <Outlet context={value} /> : <p>Loading...</p>}
+      {user ? <Outlet context={value} /> : <p>Fetching User...</p>}
     </AuthContext.Provider>
   );
 }

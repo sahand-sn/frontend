@@ -2,7 +2,7 @@ import { createContext, useMemo, useCallback } from "react";
 import axios, { AxiosError, type AxiosInstance } from "axios";
 import { Outlet, useNavigate } from "react-router";
 import { useNotification } from "./notification";
-import type { TResponse } from "~/types/api";
+import type { IError } from "~/types/api";
 
 export interface NoAuthContextType {
   login: (email: string, password: string) => Promise<void>;
@@ -21,20 +21,19 @@ export default function NoAuthProvider() {
   );
 
   const login = useCallback(
-    async (email: string, password: string) => {
+    async (username: string, password: string) => {
       await noAuthAxios
-        .post<TResponse<{ token: string }>>("/auth/login", {
-          email,
+        .post<{ token: string }>("/token/login", {
+          username,
           password,
         })
         .then((res) => {
-          localStorage.setItem("token", res.data.data.token);
+          localStorage.setItem("token", res.data.token);
           router("/");
-          showNotification(res.data.message, "success");
         })
-        .catch((e: AxiosError<TResponse>) => {
+        .catch((e: AxiosError<IError>) => {
           showNotification(
-            e.response?.data.message ?? "Some thing went wrong!",
+            e.response?.data.error ?? "Some thing went wrong!",
             "error"
           );
         });
@@ -43,21 +42,19 @@ export default function NoAuthProvider() {
   );
 
   const signup = useCallback(
-    async (name: string, email: string, password: string) => {
+    async (username: string, password: string) => {
       await noAuthAxios
-        .post<TResponse<{ token: string }>>("/auth/signup", {
-          name,
-          email,
+        .post<{ token: string }>("/token/signup", {
+          username,
           password,
         })
         .then((res) => {
-          localStorage.setItem("token", res.data.data.token);
+          localStorage.setItem("token", res.data.token);
           router("/");
-          showNotification(res.data.message, "success");
         })
-        .catch((e: AxiosError<TResponse>) => {
+        .catch((e: AxiosError<IError>) => {
           showNotification(
-            e.response?.data.message ?? "Some thing went wrong!",
+            e.response?.data.error ?? "Some thing went wrong!",
             "error"
           );
         });
