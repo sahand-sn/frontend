@@ -36,13 +36,7 @@ export function NotificationProvider({
         open={open}
         autoHideDuration={6000}
         onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        style={{
-          height: "auto",
-          lineHeight: "28px",
-          padding: 24,
-          whiteSpace: "pre-line",
-        }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
         <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
           {message}

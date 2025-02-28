@@ -1,10 +1,9 @@
 import type { MetaArgs } from "react-router";
-import { ResumeForm } from "../components/resume/form";
 
 export function meta({}: MetaArgs) {
-  return [{ title: "Add Resume" }];
+  return [{ title: "Add Menu" }];
 }
 
 export default function AddResumePage() {
-  return <ResumeForm />;
+  return <p>add menu</p>;
 }

@@ -61,7 +61,7 @@ export default function AuthProvider() {
   const logout = useCallback(() => {
     localStorage.removeItem("token");
     setUser(null);
-    navigate("/");
+    navigate("/login");
   }, [navigate]);
 
   useEffect(() => {

@@ -29,7 +29,7 @@ export default function NoAuthProvider() {
         })
         .then((res) => {
           localStorage.setItem("token", res.data.data.token);
-          router("/app/dashboard");
+          router("/");
           showNotification(res.data.message, "success");
         })
         .catch((e: AxiosError<TResponse>) => {
@@ -52,7 +52,7 @@ export default function NoAuthProvider() {
         })
         .then((res) => {
           localStorage.setItem("token", res.data.data.token);
-          router("/app/dashboard");
+          router("/");
           showNotification(res.data.message, "success");
         })
         .catch((e: AxiosError<TResponse>) => {
