@@ -130,7 +130,7 @@ export const MenuForm = ({
           />
           <FormField
             label="Restaurant Info."
-            value={formData.name}
+            value={formData.description ?? ""}
             onChange={(value) =>
               setFormData((prev) => ({ ...prev, description: value }))
             }
@@ -138,7 +138,7 @@ export const MenuForm = ({
           />
           <FormField
             label="Location"
-            value={formData.name}
+            value={formData.location ?? ""}
             onChange={(value) =>
               setFormData((prev) => ({ ...prev, location: value }))
             }
@@ -146,7 +146,7 @@ export const MenuForm = ({
           />
           <FormField
             label="Contact"
-            value={formData.name}
+            value={formData.contact ?? ""}
             onChange={(value) =>
               setFormData((prev) => ({ ...prev, contact: value }))
             }
