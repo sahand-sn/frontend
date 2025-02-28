@@ -5,6 +5,6 @@ export function meta({}: MetaArgs) {
   return [{ title: "Add Menu" }];
 }
 
-export default function AddResumePage() {
+export default function AddMenuPage() {
   return <AddMenu />;
 }

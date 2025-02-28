@@ -18,7 +18,7 @@ export default function Layout() {
         <AppBar position="static">
           <Toolbar>
             <Typography
-              textAlign="center"
+              textAlign="left"
               variant="h6"
               component="p"
               sx={{ flexGrow: 1 }}
