@@ -1,19 +1,26 @@
-// pages/Dashboard.tsx
 import { useEffect, useState } from "react";
 import { Button, Container, Grid2 as Grid, Typography } from "@mui/material";
-import { Link, useNavigate, useOutletContext } from "react-router";
+import { Link, useOutletContext } from "react-router";
 import type { AuthContextType } from "~/context/auth";
+import { useNotification } from "~/context/notification";
+import type { AxiosError } from "axios";
+import type { IError } from "~/types/api";
 
 export default function Dashboard() {
   const { authAxios, user, logout }: AuthContextType = useOutletContext();
+  const { showNotification } = useNotification();
   const [menus, setMenus] = useState<Menu[]>([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     authAxios
       .get<Menu[]>("/menu")
       .then((res) => setMenus(res.data))
-      .catch(console.error);
+      .catch((error: AxiosError<IError>) => {
+        showNotification(
+          error.response?.data.error ?? "Menu list could not be fetched",
+          "error"
+        );
+      });
   }, []);
 
   return (
@@ -29,7 +36,7 @@ export default function Dashboard() {
         <div>
           <Button
             component={Link}
-            to="/add-menu"
+            to="/menu/add"
             variant="contained"
             sx={{ mr: 2 }}
           >
