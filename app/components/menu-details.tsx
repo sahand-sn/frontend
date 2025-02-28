@@ -20,13 +20,16 @@ export default function MenuDetails() {
   const { showNotification } = useNotification();
   const navigate = useNavigate();
   const [menu, setMenu] = useState<Menu>();
+  const [key, setKey] = useState(0);
   const [editMode, setEditMode] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   useEffect(() => {
     authAxios
       .get<Menu>(`/menu/${id}`)
-      .then((res) => setMenu(res.data))
+      .then((res) => {
+        setMenu(res.data);
+      })
       .catch((error: AxiosError<IError>) =>
         showNotification(
           error.response?.data.error ?? "Menu not found",
@@ -61,6 +64,7 @@ export default function MenuDetails() {
       .then((res) => {
         showNotification(res.data.message, "success");
         setMenu(res.data.menu);
+        setEditMode(false);
       })
       .catch((error: AxiosError<IError>) => {
         showNotification(
@@ -74,13 +78,24 @@ export default function MenuDetails() {
 
   return (
     <main className="space-y-4">
-      <MenuForm onSubmit={handleEdit} initialData={menu} readOnly={!editMode} />
+      <MenuForm
+        onSubmit={handleEdit}
+        initialData={menu}
+        readOnly={!editMode}
+        key={key}
+      />
       <div className="flex gap-2">
         <Button component={Link} to="/" variant="outlined">
           Back to List
         </Button>
         {editMode ? (
-          <Button variant="outlined" onClick={() => setEditMode(false)}>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setEditMode(false);
+              setKey((prev) => prev + 1);
+            }}
+          >
             Cancel
           </Button>
         ) : (
