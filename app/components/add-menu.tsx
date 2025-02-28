@@ -20,7 +20,7 @@ export default function AddMenu() {
       })
       .then((res) => {
         showNotification(res.data.message, "success");
-        navigate(`/menu/${res.data.id}`);
+        navigate(`/menu/details/${res.data.id}`);
       })
       .catch((error: AxiosError<IError>) => {
         showNotification(

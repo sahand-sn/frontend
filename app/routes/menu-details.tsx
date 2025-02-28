@@ -4,6 +4,6 @@ export function meta({}: MetaArgs) {
   return [{ title: "Menu Details" }];
 }
 
-export default function ViewMenuPage() {
+export default function MenuDetailsPage() {
   return <p>menu details</p>;
 }
