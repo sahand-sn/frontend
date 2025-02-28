@@ -31,7 +31,8 @@ export const IngredientsList = ({
       <Stack spacing={1} direction="row" flexWrap="wrap">
         {ingredients.map((ingredient, index) => {
           return (
-            <span key={index} className="flex items-center">
+            <fieldset key={index} className="flex items-center border p-2">
+              <legend>Ingredient #{index + 1}</legend>
               <IconButton onClick={() => handleRemove(index)} color="error">
                 <p>Delete</p>
               </IconButton>
@@ -41,8 +42,9 @@ export const IngredientsList = ({
                 size="small"
                 required
                 label={`${index + 1}`}
+                readOnly={readOnly}
               />
-            </span>
+            </fieldset>
           );
         })}
         {!readOnly && (
