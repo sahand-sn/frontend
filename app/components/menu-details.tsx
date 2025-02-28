@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import {
   Button,
-  Container,
   Dialog,
   DialogActions,
+  DialogContent,
+  DialogContentText,
   DialogTitle,
-  Typography,
 } from "@mui/material";
-import { useParams, useNavigate, useOutletContext } from "react-router";
+import { useParams, useNavigate, useOutletContext, Link } from "react-router";
 import { useNotification } from "../context/notification";
 import type { AuthContextType } from "~/context/auth";
+import { MenuForm } from "./menu/menu-form";
+import type { AxiosError } from "axios";
+import type { IError } from "~/types/api";
 
 export default function MenuDetails() {
   const { id } = useParams();
@@ -22,64 +25,96 @@ export default function MenuDetails() {
 
   useEffect(() => {
     authAxios
-      .get(`/menu/${id}`)
+      .get<Menu>(`/menu/${id}`)
       .then((res) => setMenu(res.data))
-      .catch(() => showNotification("Menu not found", "error"));
+      .catch((error: AxiosError<IError>) =>
+        showNotification(
+          error.response?.data.error ?? "Menu not found",
+          "error"
+        )
+      );
   }, [id]);
 
   const handleDelete = async () => {
-    try {
-      await authAxios.delete(`/menu/${id}`);
-      showNotification("Menu deleted", "success");
-      navigate("/");
-    } catch (error) {
-      showNotification("Error deleting menu", "error");
-    }
+    await authAxios
+      .delete<{ message: string }>(`/menu/${id}`)
+      .then((res) => {
+        showNotification(res.data.message, "success");
+        navigate("/");
+      })
+      .catch((error: AxiosError<IError>) => {
+        showNotification(
+          error.response?.data.error ?? "Error deleting menu",
+          "error"
+        );
+      });
+  };
+
+  const handleEdit = async (menu: Menu) => {
+    authAxios
+      .put<{ message: string; menu: Menu }>(`/menu/${id}`, menu, {
+        headers: {
+          accept: "application/json",
+          "Content-Type": `multipart/form-data`,
+        },
+      })
+      .then((res) => {
+        showNotification(res.data.message, "success");
+        setMenu(res.data.menu);
+      })
+      .catch((error: AxiosError<IError>) => {
+        showNotification(
+          error.response?.data.error ?? "Could not edit the menu",
+          "error"
+        );
+      });
   };
 
   if (!menu) return <div>Loading...</div>;
 
   return (
-    <Container maxWidth="md">
-      <header
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          margin: "20px 0",
-        }}
-      >
-        <Typography variant="h4">{menu.name}</Typography>
-
-        <div>
-          <Button
-            variant="contained"
-            onClick={() => setEditMode(!editMode)}
-            sx={{ mr: 2 }}
-          >
-            {editMode ? "Cancel" : "Edit"}
+    <main className="space-y-4">
+      <MenuForm onSubmit={handleEdit} initialData={menu} readOnly={!editMode} />
+      <div className="flex gap-2">
+        <Button component={Link} to="/" variant="outlined">
+          Back to List
+        </Button>
+        {editMode ? (
+          <Button variant="outlined" onClick={() => setEditMode(false)}>
+            Cancel
           </Button>
-          <Button
-            variant="outlined"
-            color="error"
-            onClick={() => setDeleteConfirmOpen(true)}
-          >
-            Delete
-          </Button>
-        </div>
-      </header>
-
+        ) : (
+          <>
+            <Button variant="contained" onClick={() => setEditMode(true)}>
+              Edit
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => setDeleteConfirmOpen(true)}
+              color="error"
+            >
+              Delete
+            </Button>
+          </>
+        )}
+      </div>
       <Dialog
         open={deleteConfirmOpen}
         onClose={() => setDeleteConfirmOpen(false)}
       >
-        <DialogTitle>Delete this menu permanently?</DialogTitle>
+        <DialogTitle>Delete Menu</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Deleting a menu cannot be reverted. Do you want to proceed?
+          </DialogContentText>
+        </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteConfirmOpen(false)}>Cancel</Button>
-          <Button onClick={handleDelete} color="error">
+          <Button onClick={handleDelete} color="error" variant="contained">
             Delete
           </Button>
         </DialogActions>
       </Dialog>
-    </Container>
+    </main>
   );
 }
